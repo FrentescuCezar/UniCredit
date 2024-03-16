@@ -30,9 +30,7 @@ public class CategoryService {
 
         for (String trKeyword : transactionKeywords) {
             List<Keyword> matchingKeywords = keywordRepository.findByValueContaining(trKeyword);
-            //System.out.println(trKeyword);
             for (Keyword matchingKeyword : matchingKeywords) {
-                //System.out.println(matchingKeyword);
                 Long categoryId = matchingKeyword.getCategory().getId();
                 categoryScores.put(categoryId, categoryScores.getOrDefault(categoryId, 0) + 1);
             }

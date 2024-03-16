@@ -17,5 +17,4 @@ public class Category {
     @Column(nullable = false)
     private String value;
 
-    // Standard getters and setters
 }

@@ -9,5 +9,4 @@ import java.util.List;
 @Repository
 public interface KeywordRepository extends JpaRepository<Keyword, Long> {
     List<Keyword> findByValueContaining(String keyword);
-    // You can add custom methods if needed
 }

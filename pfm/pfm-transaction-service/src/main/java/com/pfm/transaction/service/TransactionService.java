@@ -31,7 +31,7 @@ public class TransactionService {
 
     @Transactional
     public Transaction updateTransaction(Long id, Transaction transaction) {
-        transaction.setId(id); // Ensure the transaction has the correct ID
+        transaction.setId(id);
         return transactionRepository.save(transaction);
     }
 

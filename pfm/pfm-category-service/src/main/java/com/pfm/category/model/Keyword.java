@@ -18,5 +18,4 @@ public class Keyword {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    // Standard getters and setters
 }

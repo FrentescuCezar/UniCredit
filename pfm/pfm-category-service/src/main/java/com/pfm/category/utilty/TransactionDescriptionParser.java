@@ -14,16 +14,15 @@ public class TransactionDescriptionParser {
     private static final String TRANSACTION_TYPE_PATTERN = "(CUMPARARE PRIN POS|POS purchase|RETRAGERI DE NUMERAR DE LA ATM-UL BANCII|All transactions)";
     private static final String AUTH_CODE_PATTERN = "Auth code (\\d+)";
     private static final String AMOUNT_AND_OPTIONAL_EXCHANGE_PATTERN = "([\\d,.]+\\s+\\w{3})(?:\\s+([\\d,.]+\\s+\\w{3})\\s+@([\\d,.]+)\\s+\\w{3}-\\w{3})?";
-    private static final String KEYWORDS_PATTERN = "(.*?)"; // Non-greedy match for keywords
+    private static final String KEYWORDS_PATTERN = "(.*?)"; // Non-greedy match
 
-    // Constructing the full transaction pattern
     private static final Pattern TRANSACTION_PATTERN = Pattern.compile(
-            CARD_NUMBER_PATTERN + "\\s+" + // Card Number
-                    DATE_PATTERN + "\\s+" + // Date
-                    KEYWORDS_PATTERN + "\\s+" + // Keywords
-                    TRANSACTION_TYPE_PATTERN + "\\s+" + // Transaction Type
-                    AUTH_CODE_PATTERN + "\\s+" + // Auth Code
-                    AMOUNT_AND_OPTIONAL_EXCHANGE_PATTERN, // Amount and Currency
+            CARD_NUMBER_PATTERN + "\\s+" +
+                    DATE_PATTERN + "\\s+" +
+                    KEYWORDS_PATTERN + "\\s+" +
+                    TRANSACTION_TYPE_PATTERN + "\\s+" +
+                    AUTH_CODE_PATTERN + "\\s+" +
+                    AMOUNT_AND_OPTIONAL_EXCHANGE_PATTERN,
             Pattern.CASE_INSENSITIVE);
 
     public TransactionParts parse(String description) {
@@ -38,8 +37,7 @@ public class TransactionDescriptionParser {
                     matcher.group(6) // Initial Amount and Currency
             );
 
-            if (matcher.group(7) != null && matcher.group(8) != null) { // If there's a secondary amount and an exchange rate
-                // Optional: combine or process these as needed
+            if (matcher.group(7) != null && matcher.group(8) != null) {
                 String secondaryAmount = matcher.group(7);
                 String exchangeRate = matcher.group(8);
 
@@ -65,8 +63,8 @@ public class TransactionDescriptionParser {
         private String transactionType;
         private String authCode;
         private String amount;
-        private String secondaryAmount; // Optional, null by default
-        private String exchangeRate; // Optional, null by default
+        private String secondaryAmount;
+        private String exchangeRate;
 
         public TransactionParts(String cardNumber, String date, String keywords, String transactionType, String authCode, String amount) {
             this.cardNumber = cardNumber;
@@ -75,8 +73,8 @@ public class TransactionDescriptionParser {
             this.transactionType = transactionType;
             this.authCode = authCode;
             this.amount = amount;
-            this.secondaryAmount = null; // Initially null, can be set later if secondary amount is present
-            this.exchangeRate = null; // Initially null, can be set later if exchange rate info is present
+            this.secondaryAmount = null;
+            this.exchangeRate = null;
         }
     }
 }
