@@ -1,7 +1,11 @@
 package com.pfm.transaction.service;
 
-import com.pfm.transaction.model.Transaction;
+import com.pfm.transaction.repository.model.TransactionEntity;
 import com.pfm.transaction.repository.TransactionRepository;
+import com.pfm.transaction.service.dto.TransactionDTO;
+import com.pfm.transaction.service.mapper.TransactionMapper;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,30 +14,39 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class TransactionService {
 
-    @Autowired
-    private TransactionRepository transactionRepository;
+    private final TransactionRepository transactionRepository;
+    //private final TransactionMapper transactionMapper;
 
-    public List<Transaction> getAllTransactions() {
-        return transactionRepository.findAll();
+
+    public List<TransactionDTO> getAllTransactions() {
+        return transactionRepository.findAll().stream()
+                .map(TransactionMapper.TRANSACTION_MAPPER::toTransactionDTO)
+                .toList();
     }
 
     @Transactional
-    public Transaction saveTransaction(Transaction transaction) {
-        return transactionRepository.save(transaction);
+    public TransactionDTO saveTransaction(TransactionDTO transactionDTO) {
+        TransactionEntity transactionEntity = TransactionMapper.TRANSACTION_MAPPER.toTransactionEntity(transactionDTO);
+        TransactionEntity savedEntity = transactionRepository.save(transactionEntity);
+        return TransactionMapper.TRANSACTION_MAPPER.toTransactionDTO(savedEntity);
     }
 
     @Transactional(readOnly = true)
-    public Optional<Transaction> getTransactionById(Long id) {
-        return transactionRepository.findById(id);
+    public Optional<TransactionDTO> getTransactionById(Long id) {
+        return transactionRepository.findById(id)
+                .map(TransactionMapper.TRANSACTION_MAPPER::toTransactionDTO);
     }
 
     @Transactional
-    public Transaction updateTransaction(Long id, Transaction transaction) {
-        transaction.setId(id);
-        return transactionRepository.save(transaction);
+    public TransactionDTO updateTransaction(TransactionDTO transactionDTO) {
+        TransactionEntity transactionEntity = TransactionMapper.TRANSACTION_MAPPER.toTransactionEntity(transactionDTO);
+        TransactionEntity updatedEntity = transactionRepository.save(transactionEntity);
+        return TransactionMapper.TRANSACTION_MAPPER.toTransactionDTO(updatedEntity);
     }
+
 
     @Transactional
     public void deleteTransaction(Long id) {

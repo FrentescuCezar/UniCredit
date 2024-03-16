@@ -1,4 +1,4 @@
-package com.pfm.transaction.model;
+package com.pfm.transaction.repository.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -9,28 +9,25 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "pfm_trx")
-public class Transaction {
+public class TransactionEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = true)
     private Date date;
 
-    @Column(nullable = true)
     private BigDecimal amount;
 
-    @Column(name = "category_id", nullable = true)
+    @Column(name = "category_id")
     private Long categoryId;
 
-    @Column(name = "keyword_id", nullable = true)
+    @Column(name = "keyword_id")
     private Long keywordId;
 
-    @Column(name = "parent_id", nullable = true)
+    @Column(name = "parent_id")
     private Long parentId;
 
-    @Column(nullable = true, length = 255)
     private String description;
 
 }

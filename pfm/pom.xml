@@ -17,6 +17,7 @@
     <modules>
         <module>pfm-transaction-service</module>
 		<module>pfm-category-service</module>
+		<module>pfm-transaction-service</module>
 	</modules>
     <properties>
 		<java.version>17</java.version>
@@ -48,6 +49,12 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>1.6.0.Beta1</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -62,6 +69,7 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+
 				</configuration>
 			</plugin>
 		</plugins>
