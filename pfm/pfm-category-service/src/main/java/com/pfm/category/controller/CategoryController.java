@@ -1,6 +1,6 @@
 package com.pfm.category.controller;
 
-import com.pfm.category.dto.TransactionDTO;
+import com.pfm.category.service.dto.TransactionDTO;
 import com.pfm.category.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,4 +26,6 @@ public class CategoryController {
         return categoryId.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+
 }

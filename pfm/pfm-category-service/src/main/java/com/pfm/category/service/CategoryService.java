@@ -1,27 +1,21 @@
 package com.pfm.category.service;
 
-import com.pfm.category.dto.TransactionDTO;
-import com.pfm.category.model.Keyword;
+import com.pfm.category.service.dto.TransactionDTO;
 import com.pfm.category.repository.CategoryRepository;
 import com.pfm.category.repository.KeywordRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.pfm.category.repository.model.KeywordEntity;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final KeywordRepository keywordRepository;
     private final KeywordService keywordService;
-
-    @Autowired
-    public CategoryService(CategoryRepository categoryRepository, KeywordRepository keywordRepository, KeywordService keywordService) {
-        this.categoryRepository = categoryRepository;
-        this.keywordRepository = keywordRepository;
-        this.keywordService = keywordService;
-    }
 
     public Optional<Long> findCategoryForTransaction(TransactionDTO transaction) {
         List<String> transactionKeywords = tokenizeAndCleanDescription(transaction.getDescription());
@@ -29,8 +23,8 @@ public class CategoryService {
         Map<Long, Integer> categoryScores = new HashMap<>(); // Category ID to score
 
         for (String trKeyword : transactionKeywords) {
-            List<Keyword> matchingKeywords = keywordRepository.findByValueContaining(trKeyword);
-            for (Keyword matchingKeyword : matchingKeywords) {
+            List<KeywordEntity> matchingKeywords = keywordRepository.findByValueContaining(trKeyword);
+            for (KeywordEntity matchingKeyword : matchingKeywords) {
                 Long categoryId = matchingKeyword.getCategory().getId();
                 categoryScores.put(categoryId, categoryScores.getOrDefault(categoryId, 0) + 1);
             }

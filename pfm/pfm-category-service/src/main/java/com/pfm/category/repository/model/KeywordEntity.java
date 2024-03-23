@@ -1,20 +1,21 @@
-package com.pfm.category.model;
+package com.pfm.category.repository.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "pfm_category")
-public class Category {
+@Table(name = "pfm_keyword")
+public class KeywordEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "parent_id")
-    private Long parentId;
-
     @Column(nullable = false)
     private String value;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private CategoryEntity category;
 
 }

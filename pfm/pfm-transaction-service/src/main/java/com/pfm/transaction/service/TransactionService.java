@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static com.pfm.transaction.service.mapper.TransactionMapper.*;
+
 @Service
 @RequiredArgsConstructor
 public class TransactionService {
@@ -23,28 +25,28 @@ public class TransactionService {
 
     public List<TransactionDTO> getAllTransactions() {
         return transactionRepository.findAll().stream()
-                .map(TransactionMapper.TRANSACTION_MAPPER::toTransactionDTO)
+                .map(TRANSACTION_MAPPER::toTransactionDTO)
                 .toList();
     }
 
     @Transactional
     public TransactionDTO saveTransaction(TransactionDTO transactionDTO) {
-        TransactionEntity transactionEntity = TransactionMapper.TRANSACTION_MAPPER.toTransactionEntity(transactionDTO);
+        TransactionEntity transactionEntity = TRANSACTION_MAPPER.toTransactionEntity(transactionDTO);
         TransactionEntity savedEntity = transactionRepository.save(transactionEntity);
-        return TransactionMapper.TRANSACTION_MAPPER.toTransactionDTO(savedEntity);
+        return TRANSACTION_MAPPER.toTransactionDTO(savedEntity);
     }
 
     @Transactional(readOnly = true)
     public Optional<TransactionDTO> getTransactionById(Long id) {
         return transactionRepository.findById(id)
-                .map(TransactionMapper.TRANSACTION_MAPPER::toTransactionDTO);
+                .map(TRANSACTION_MAPPER::toTransactionDTO);
     }
 
     @Transactional
     public TransactionDTO updateTransaction(TransactionDTO transactionDTO) {
-        TransactionEntity transactionEntity = TransactionMapper.TRANSACTION_MAPPER.toTransactionEntity(transactionDTO);
+        TransactionEntity transactionEntity = TRANSACTION_MAPPER.toTransactionEntity(transactionDTO);
         TransactionEntity updatedEntity = transactionRepository.save(transactionEntity);
-        return TransactionMapper.TRANSACTION_MAPPER.toTransactionDTO(updatedEntity);
+        return TRANSACTION_MAPPER.toTransactionDTO(updatedEntity);
     }
 
 
