@@ -5,10 +5,12 @@ import com.pfm.transaction.service.dto.CategoryUpdateDTO;
 import com.pfm.transaction.service.dto.TransactionDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,5 +72,13 @@ public class TransactionController {
         }
         transactionService.deleteTransaction(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
+    @GetMapping("/summary")
+    public ResponseEntity<List<TransactionDTO>> getTransactionBetweenDates(@RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
+                                                                           @RequestParam("end") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate) {
+        List<TransactionDTO> transactionDTOs = transactionService.getTransactionBetweenDates(startDate, endDate);
+        return ResponseEntity.ok(transactionDTOs);
     }
 }

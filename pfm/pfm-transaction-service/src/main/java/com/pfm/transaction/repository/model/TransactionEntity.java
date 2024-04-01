@@ -33,5 +33,4 @@ public class TransactionEntity {
 
     @Column(name = "description")
     private String description;
-
 }
