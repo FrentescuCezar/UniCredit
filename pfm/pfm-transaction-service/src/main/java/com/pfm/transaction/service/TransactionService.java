@@ -3,12 +3,13 @@ package com.pfm.transaction.service;
 import com.pfm.transaction.repository.model.TransactionEntity;
 import com.pfm.transaction.repository.TransactionRepository;
 import com.pfm.transaction.service.dto.TransactionDTO;
+import com.pfm.transaction.service.mapper.TransactionMapper;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +18,7 @@ import static com.pfm.transaction.service.mapper.TransactionMapper.*;
 @Service
 @RequiredArgsConstructor
 public class TransactionService {
+
     private final TransactionRepository transactionRepository;
     //private final TransactionMapper transactionMapper;
 
@@ -53,10 +55,4 @@ public class TransactionService {
         transactionRepository.deleteById(id);
     }
 
-    @Transactional
-    public List<TransactionDTO> getTransactionBetweenDates(Date startDate, Date endDate) {
-        return transactionRepository.getTransactionBetweenDates(startDate, endDate).stream()
-                .map(TRANSACTION_MAPPER::toTransactionDTO)
-                .toList();
-    }
 }
