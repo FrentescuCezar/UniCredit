@@ -3,8 +3,6 @@ package com.pfm.category.repository.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.Set;
-
 @Data
 @Entity
 @Table(name = "pfm_category")
@@ -14,16 +12,9 @@ public class CategoryEntity {
     private Long id;
 
     @ManyToOne
-    @Column(name = "parent_id")
-    private Long parentId;
+    @JoinColumn(name = "parent_id")
+    private CategoryEntity parent;
 
     @Column(nullable = false)
     private String value;
-
-    @OneToMany(mappedBy = "parent")
-    private Set<CategoryEntity> child;
-
-    @OneToOne(mappedBy = "category")
-    private KeywordEntity keywords;
-
 }
