@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Set;
 
 @Data
 @Entity
@@ -15,8 +16,10 @@ public class TransactionEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "date")
     private Date date;
 
+    @Column(name = "amount")
     private BigDecimal amount;
 
     @Column(name = "category_id")
@@ -28,6 +31,7 @@ public class TransactionEntity {
     @Column(name = "parent_id")
     private Long parentId;
 
+    @Column(name = "description")
     private String description;
 
 }
