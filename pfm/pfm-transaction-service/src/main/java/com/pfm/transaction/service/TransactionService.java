@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,5 +56,10 @@ public class TransactionService {
         transactionRepository.deleteById(id);
     }
 
-    //to do report 
+    @Transactional
+    public List<TransactionDTO> getTransactionBetweenDates(Date startDate, Date endDate) {
+        return transactionRepository.getTransactionBetweenDates(startDate, endDate).stream()
+                .map(TRANSACTION_MAPPER::toTransactionDTO)
+                .toList();
+    }
 }
