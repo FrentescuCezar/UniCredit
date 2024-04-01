@@ -1,6 +1,7 @@
 package com.pfm.transaction.controller;
 
 import com.pfm.transaction.service.TransactionService;
+import com.pfm.transaction.service.dto.CategoryUpdateDTO;
 import com.pfm.transaction.service.dto.TransactionDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,12 +39,11 @@ public class TransactionController {
 
     @PutMapping("/{id}")
     public ResponseEntity<TransactionDTO> updateTransaction(@PathVariable Long id,
-                                                            @RequestBody TransactionDTO transactionDTO)
-    {
+                                                            @RequestBody TransactionDTO transactionDTO) {
         if (transactionService.getTransactionById(id).isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        TransactionDTO updatedTransactionDTO = transactionService.updateTransaction(transactionDTO);
+        TransactionDTO updatedTransactionDTO = transactionService.updateTransaction(id, transactionDTO);
         return ResponseEntity.ok(updatedTransactionDTO);
     }
 
@@ -53,5 +54,19 @@ public class TransactionController {
         }
         transactionService.deleteTransaction(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping("/{id}/category")
+    public ResponseEntity<TransactionDTO> updateTransactionCategory(@PathVariable Long id, @RequestBody CategoryUpdateDTO categoryUpdateDTO) {
+        Optional<TransactionDTO> transactionDTOOptional = transactionService.getTransactionById(id);
+        if (transactionDTOOptional.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        TransactionDTO transactionDTO = transactionDTOOptional.get();
+        transactionDTO.setCategoryId(categoryUpdateDTO.getCategoryId());
+        TransactionDTO updatedTransactionDTO = transactionService.updateTransaction(id, transactionDTO);
+
+        return ResponseEntity.ok(updatedTransactionDTO);
     }
 }
