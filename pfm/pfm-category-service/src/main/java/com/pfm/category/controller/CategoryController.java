@@ -1,5 +1,6 @@
 package com.pfm.category.controller;
 
+import com.pfm.category.repository.model.KeywordEntity;
 import com.pfm.category.service.dto.TransactionDTO;
 import com.pfm.category.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -25,6 +27,11 @@ public class CategoryController {
         Optional<Long> categoryId = categoryService.findCategoryForTransaction(transactionDTO);
         return categoryId.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/findCategoryForTransactionWithoutPattern")
+    public List<KeywordEntity> findCategoryForTransactionWithoutPattern(@RequestBody TransactionDTO transactionDTO) {
+        return categoryService.findCategoryForTransactionWithoutPattern(transactionDTO.getDescription());
     }
 
 
