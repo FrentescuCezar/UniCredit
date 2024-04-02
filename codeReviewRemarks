@@ -1,0 +1,44 @@
+please see project structure -> not ok to have project in project !!
+
+pfm-category-service
+
+
+CategoryController
+-> move logic to service file
+
+KeywordController
+-> constructor not needed, use annotation: @RequiredArgsConstructor, or another one
+
+
+pfm-transaction-service
+
+TransactionController
+- remove unused import
+- move logic from controller and put in service on: getTransaction, updateTransaction, updateTransactionCategory, deleteTransaction
+- no need for new object: getAllTransactions, createTransaction
+
+TransactionEntity
+- annotation not needed for fields that have the same name in java/db
+- 
+
+TransactionDTO 
+- remove unused imports
+
+TransactionService
+- remove unused imports
+- delete comment at line 25
+
+KeywordService
+-> no need for constructor, see above
+-> line 25 -> you can use an enum 
+-> line 28 ->  replace .collect(Collectors.toList()); with .toList() 
+
+CategoryService
+->    replace .collect(Collectors.groupingBy(parentCategory -> parentCategory.getId(), Collectors.counting())); with lambda .collect(Collectors.groupingBy(CategoryEntity::getId, Collectors.counting()))
+-> line 69 -> return dirrectly
+-> sparse method: determineCategory in submethods
+
+TransactionDescriptionParser:
+-> transaction can have whatever format
+-> TransactionParts -> constructor not needed, see above
+
