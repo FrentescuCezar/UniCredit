@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -16,102 +17,72 @@ public class CategoryService {
     private final KeywordService keywordService;
 
     public Optional<Long> findCategoryForTransaction(TransactionDTO transaction) {
-        //Optional<Long> categoryId = findCategoryForTransactionWithPattern(transaction.getDescription());
-        //if(categoryId.isPresent()){
-        //    return categoryId;
-        //}
+        Optional<Long> categoryId = findCategoryForTransactionWithPattern(transaction.getDescription());
+        if (categoryId.isPresent()) {
+            return categoryId;
+        }
 
         List<KeywordEntity> keywordList = findCategoryForTransactionWithoutPattern(transaction.getDescription());
         return determineCategory(keywordList);
     }
+    private Optional<Long> findCategoryForTransactionWithPattern(String description) {
+        List<String> keywords = tokenizeAndCleanDescription(description);
 
+        // Extract keywords from the transaction description,
+        // search for related categories, and return the category
+        // ID with the highest occurrence count
 
-
-
-    private Optional<Long> findCategoryForTransactionWithPattern (String description){
-
-        List<String> transactionKeywords = tokenizeAndCleanDescription(description);
-
-        Map<Long, Integer> categoryScores = new HashMap<>(); // Category ID to score
-
-        for (String trKeyword : transactionKeywords) {
-            List<KeywordEntity> matchingKeywords = keywordRepository.findByValueContaining(trKeyword);
-            for (KeywordEntity matchingKeyword : matchingKeywords) {
-                Long categoryId = matchingKeyword.getCategory().getId();
-                categoryScores.put(categoryId, categoryScores.getOrDefault(categoryId, 0) + 1);
-            }
-        }
-
-        return categoryScores.entrySet().stream()
+        return keywords.stream()
+                .flatMap(keyword -> keywordRepository.findByValueContaining(keyword).stream())
+                .collect(Collectors.groupingBy(keyword -> keyword.getCategory().getId(), Collectors.counting()))
+                .entrySet().stream()
                 .max(Map.Entry.comparingByValue())
                 .map(Map.Entry::getKey);
     }
-    public List<KeywordEntity> findCategoryForTransactionWithoutPattern (String description){
+    public List<KeywordEntity> findCategoryForTransactionWithoutPattern(String description) {
         return keywordRepository.searchWithNaturalLanguageMode(description);
     }
-
-
-
-    public Optional<Long> determineCategory(List<KeywordEntity> keywordEntities) {
-        if (keywordEntities.isEmpty()) {
+    private Optional<Long> determineCategory(List<KeywordEntity> keywords) {
+        if (keywords.isEmpty()) {
             return Optional.empty();
         }
 
-        if (keywordEntities.size() == 1) {
-            return Optional.of(keywordEntities.get(0).getCategory().getId());
-        }
+        Map<Long, Long> categoryCounts = keywords.stream()
+                .collect(Collectors.groupingBy(keyword -> keyword.getCategory().getId(), Collectors.counting()));
 
-        // Map to count occurrences of each category ID
-        Map<Long, Long> categoryIdCounts = new HashMap<>();
-        for (KeywordEntity keyword : keywordEntities) {
-            Long categoryId = keyword.getCategory().getId();
-            categoryIdCounts.put(categoryId, categoryIdCounts.getOrDefault(categoryId, 0L) + 1);
-        }
-
-        // Find the most common category ID
-        Long mostCommonCategoryId = null;
-        long maxCount = 1;
-        for (Map.Entry<Long, Long> entry : categoryIdCounts.entrySet()) {
-            if (entry.getValue() > maxCount) {
-                mostCommonCategoryId = entry.getKey();
-                maxCount = entry.getValue();
-            }
-        }
+        Long mostCommonCategoryId = categoryCounts.entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElse(null);
 
         if (mostCommonCategoryId != null) {
             return Optional.of(mostCommonCategoryId);
         }
 
-        // If no common category ID, find the most common parent category ID
-        Map<Long, Long> parentCategoryIdCounts = new HashMap<>();
-        for (KeywordEntity keyword : keywordEntities) {
-            Long parentCategoryId = keyword.getCategory().getParent().getId();
-            if (parentCategoryId != null) {
-                parentCategoryIdCounts.put(parentCategoryId, parentCategoryIdCounts.getOrDefault(parentCategoryId, 0L) + 1);
-            }
-        }
+        // If no common category ID, find most common parent category ID
+        Map<Long, Long> parentCategoryCounts = keywords.stream()
+                .map(keyword -> keyword.getCategory().getParent())
+                .filter(Objects::nonNull)
+                .collect(Collectors.groupingBy(parentCategory -> parentCategory.getId(), Collectors.counting()));
 
-        // Find the most common parent category ID
-        Long mostCommonParentCategoryId = null;
-        maxCount = 0;
-        for (Map.Entry<Long, Long> entry : parentCategoryIdCounts.entrySet()) {
-            if (entry.getValue() > maxCount) {
-                mostCommonParentCategoryId = entry.getKey();
-                maxCount = entry.getValue();
-            }
-        }
+        Optional<Long> mostCommonParentCategoryId = parentCategoryCounts.entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey);
 
-        // Return the most common parent category ID wrapped in an Optional
-        return mostCommonParentCategoryId != null ? Optional.of(mostCommonParentCategoryId) : Optional.empty();
+
+        return mostCommonParentCategoryId;
     }
 
     private List<String> tokenizeAndCleanDescription(String description) {
-        String keywords = keywordService.parseTransactionDescription(description).getKeywords();
+        Optional<String> optionalKeywords = keywordService.parseTransactionDescription(description);
+        if (optionalKeywords.isEmpty()) {
+            return Collections.emptyList(); // or however you want to handle missing keywords
+        }
+        String keywords = optionalKeywords.get();
         String cleanedDescription = keywords.replaceAll("[^a-zA-Z ]", "").toLowerCase();
         List<String> initialKeywords = Arrays.asList(cleanedDescription.split("\\s+"));
         return keywordService.filterKeywords(initialKeywords);
     }
-
 
 
 }

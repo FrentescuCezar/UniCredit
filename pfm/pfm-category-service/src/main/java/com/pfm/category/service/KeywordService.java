@@ -5,10 +5,7 @@ import com.pfm.category.utilty.TransactionDescriptionParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,9 +19,9 @@ public class KeywordService {
         this.parser = parser;
     }
 
-    public TransactionDescriptionParser.TransactionParts parseTransactionDescription(String description) {
-        return parser.parse(description);
-    }
+    public Optional<String> parseTransactionDescription(String description) {
+        return parser.parse(description)
+                .map(TransactionDescriptionParser.TransactionParts::getKeywords);    }
 
     public List<String> filterKeywords(List<String> keywords) {
         Set<String> filterWords = new HashSet<>(Arrays.asList("srl", "sa", "romania", "sc", "impex"));

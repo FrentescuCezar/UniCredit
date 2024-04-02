@@ -29,10 +29,7 @@ public class CategoryController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/findCategoryForTransactionWithoutPattern")
-    public List<KeywordEntity> findCategoryForTransactionWithoutPattern(@RequestBody TransactionDTO transactionDTO) {
-        return categoryService.findCategoryForTransactionWithoutPattern(transactionDTO.getDescription());
-    }
+    
 
 
 }

@@ -3,6 +3,7 @@ package com.pfm.category.utilty;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,7 +26,7 @@ public class TransactionDescriptionParser {
                     AMOUNT_AND_OPTIONAL_EXCHANGE_PATTERN,
             Pattern.CASE_INSENSITIVE);
 
-    public TransactionParts parse(String description) {
+    public Optional<TransactionParts> parse(String description) {
         Matcher matcher = TRANSACTION_PATTERN.matcher(description);
         if (matcher.find()) {
             TransactionParts parts = new TransactionParts(
@@ -38,20 +39,15 @@ public class TransactionDescriptionParser {
             );
 
             if (matcher.group(7) != null && matcher.group(8) != null) {
-                String secondaryAmount = matcher.group(7);
-                String exchangeRate = matcher.group(8);
-
-                parts.setSecondaryAmount(secondaryAmount);
-                parts.setExchangeRate(exchangeRate);
+                parts.setSecondaryAmount(matcher.group(7));
+                parts.setExchangeRate(matcher.group(8));
             }
 
-            return parts;
+            return Optional.of(parts);
         } else {
-            System.out.println("No match found.");
-            return null;
+            return Optional.empty();
         }
     }
-
 
 
 
