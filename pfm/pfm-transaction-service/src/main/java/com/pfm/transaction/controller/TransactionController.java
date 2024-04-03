@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -76,9 +77,9 @@ public class TransactionController {
 
 
     @GetMapping("/summary")
-    public ResponseEntity<List<TransactionDTO>> getTransactionBetweenDates(@RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
-                                                                           @RequestParam("end") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate) {
-        List<TransactionDTO> transactionDTOs = transactionService.getTransactionBetweenDates(startDate, endDate);
+    public ResponseEntity<List<Map<String, Object>>> getTransactionBetweenDates(@RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
+                                                                                @RequestParam("end") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate) {
+        List<Map<String, Object>> transactionDTOs = transactionService.getTransactionBetweenDates(startDate, endDate);
         return ResponseEntity.ok(transactionDTOs);
     }
 }
