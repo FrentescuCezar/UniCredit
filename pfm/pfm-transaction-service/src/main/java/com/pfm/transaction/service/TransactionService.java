@@ -11,9 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static com.pfm.transaction.service.mapper.TransactionMapper.*;
 
@@ -69,9 +67,14 @@ public class TransactionService {
     }
 
     @Transactional
-    public List<TransactionDTO> getTransactionBetweenDates(Date startDate, Date endDate) {
+    public List<Map<String, Object>> getTransactionBetweenDates(Date startDate, Date endDate) {
         return transactionRepository.getTransactionBetweenDates(startDate, endDate).stream()
-                .map(TRANSACTION_MAPPER::toTransactionDTO)
+                .map(te -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("date", te.getDate());
+                    map.put("amount", te.getAmount());
+                    return map;
+                })
                 .toList();
     }
 }
