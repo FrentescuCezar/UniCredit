@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,8 +18,8 @@ public class CategoryController {
 
     @PostMapping("/findCategoryForTransaction")
     public ResponseEntity<Long> findCategoryForTransaction(@RequestBody TransactionDTO transactionDTO) {
-        Optional<Long> categoryId = categoryService.findCategoryForTransaction(transactionDTO);
-        return categoryId.map(ResponseEntity::ok)
+        return categoryService.findCategoryForTransaction(transactionDTO)
+                .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

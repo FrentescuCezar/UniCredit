@@ -17,28 +17,10 @@ public class CategoryService {
     private final KeywordService keywordService;
 
     public Optional<Long> findCategoryForTransaction(TransactionDTO transaction) {
-        Optional<Long> categoryId = findCategoryForTransactionWithPattern(transaction.getDescription());
-        if (categoryId.isPresent()) {
-            return categoryId;
-        }
-
         List<KeywordEntity> keywordList = findCategoryForTransactionWithoutPattern(transaction.getDescription());
         return determineCategory(keywordList);
     }
-    private Optional<Long> findCategoryForTransactionWithPattern(String description) {
-        List<String> keywords = tokenizeAndCleanDescription(description);
 
-        // Extract keywords from the transaction description,
-        // search for related categories, and return the category
-        // ID with the highest occurrence count
-
-        return keywords.stream()
-                .flatMap(keyword -> keywordRepository.findByValueContaining(keyword).stream())
-                .collect(Collectors.groupingBy(keyword -> keyword.getCategory().getId(), Collectors.counting()))
-                .entrySet().stream()
-                .max(Map.Entry.comparingByValue())
-                .map(Map.Entry::getKey);
-    }
     public List<KeywordEntity> findCategoryForTransactionWithoutPattern(String description) {
         return keywordRepository.searchWithNaturalLanguageMode(description);
     }
@@ -73,16 +55,6 @@ public class CategoryService {
         return mostCommonParentCategoryId;
     }
 
-    private List<String> tokenizeAndCleanDescription(String description) {
-        Optional<String> optionalKeywords = keywordService.parseTransactionDescription(description);
-        if (optionalKeywords.isEmpty()) {
-            return Collections.emptyList(); // or however you want to handle missing keywords
-        }
-        String keywords = optionalKeywords.get();
-        String cleanedDescription = keywords.replaceAll("[^a-zA-Z ]", "").toLowerCase();
-        List<String> initialKeywords = Arrays.asList(cleanedDescription.split("\\s+"));
-        return keywordService.filterKeywords(initialKeywords);
-    }
 
 
 }
