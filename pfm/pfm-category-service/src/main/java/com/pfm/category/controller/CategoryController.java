@@ -18,8 +18,6 @@ public class CategoryController {
 
     @PostMapping("/findCategoryForTransaction")
     public ResponseEntity<Long> findCategoryForTransaction(@RequestBody TransactionDTO transactionDTO) {
-        return categoryService.findCategoryForTransaction(transactionDTO)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(categoryService.findCategoryForTransaction(transactionDTO));
     }
 }

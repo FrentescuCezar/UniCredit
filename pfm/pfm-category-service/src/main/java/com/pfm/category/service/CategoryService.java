@@ -1,5 +1,6 @@
 package com.pfm.category.service;
 
+import com.pfm.category.exception.CategoryNotFoundException;
 import com.pfm.category.service.dto.TransactionDTO;
 import com.pfm.category.repository.KeywordRepository;
 import com.pfm.category.repository.model.KeywordEntity;
@@ -16,7 +17,7 @@ public class CategoryService {
     private final KeywordRepository keywordRepository;
     private final KeywordService keywordService;
 
-    public Optional<Long> findCategoryForTransaction(TransactionDTO transaction) {
+    public Long findCategoryForTransaction(TransactionDTO transaction) {
         List<KeywordEntity> keywordList = findCategoryForTransactionWithoutPattern(transaction.getDescription());
         return determineCategory(keywordList);
     }
@@ -24,9 +25,9 @@ public class CategoryService {
     public List<KeywordEntity> findCategoryForTransactionWithoutPattern(String description) {
         return keywordRepository.searchWithNaturalLanguageMode(description);
     }
-    private Optional<Long> determineCategory(List<KeywordEntity> keywords) {
+    private Long determineCategory(List<KeywordEntity> keywords) {
         if (keywords.isEmpty()) {
-            return Optional.empty();
+            throw new CategoryNotFoundException("No category found for the given keywords");
         }
 
         Map<Long, Long> categoryCounts = keywords.stream()
@@ -38,22 +39,23 @@ public class CategoryService {
                 .orElse(null);
 
         if (mostCommonCategoryId != null) {
-            return Optional.of(mostCommonCategoryId);
+            return mostCommonCategoryId; // Return the most common category ID
         }
 
-        // If no common category ID, find most common parent category ID
+        // If no common category ID, find the most common parent category ID
         Map<Long, Long> parentCategoryCounts = keywords.stream()
                 .map(keyword -> keyword.getCategory().getParent())
                 .filter(Objects::nonNull)
                 .collect(Collectors.groupingBy(parentCategory -> parentCategory.getId(), Collectors.counting()));
 
-        Optional<Long> mostCommonParentCategoryId = parentCategoryCounts.entrySet().stream()
+        Long mostCommonParentCategoryId = parentCategoryCounts.entrySet().stream()
                 .max(Map.Entry.comparingByValue())
-                .map(Map.Entry::getKey);
-
+                .map(Map.Entry::getKey)
+                .orElseThrow(() -> new CategoryNotFoundException("No common parent category found for the given keywords"));
 
         return mostCommonParentCategoryId;
     }
+
 
 
 
