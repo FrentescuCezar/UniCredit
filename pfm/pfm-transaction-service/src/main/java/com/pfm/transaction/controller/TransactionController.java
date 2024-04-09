@@ -52,23 +52,17 @@ public class TransactionController {
     }
 
     @PutMapping("/{id}/category")
-    public ResponseEntity<TransactionDTO> updateTransactionCategory(@PathVariable Long id, @RequestBody CategoryUpdateDTO categoryUpdateDTO) {
-        TransactionDTO transactionDTO = transactionService.getTransactionById(id);
-        transactionDTO.setCategoryId(categoryUpdateDTO.getCategoryId());
-        TransactionDTO updatedTransactionDTO = transactionService.updateTransaction(id, transactionDTO);
-
-        return ResponseEntity.ok(updatedTransactionDTO);
+    public ResponseEntity<TransactionDTO> updateTransactionCategory(@PathVariable Long id,
+                                                                    @RequestBody CategoryUpdateDTO categoryUpdateDTO) {
+        return ResponseEntity.ok(transactionService.updateTransactionCategory(id, categoryUpdateDTO));
     }
 
 
-    //@DeleteMapping("/{id}")
-    //public ResponseEntity<Void> deleteTransaction(@PathVariable Long id) {
-    //    if (transactionService.getTransactionById(id).isEmpty()) {
-    //        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    //    }
-    //    transactionService.deleteTransaction(id);
-    //    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    //}
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTransaction(@PathVariable Long id) {
+        transactionService.deleteTransaction(id);
+        return ResponseEntity.noContent().build();
+    }
 
 
     @GetMapping("/summary")

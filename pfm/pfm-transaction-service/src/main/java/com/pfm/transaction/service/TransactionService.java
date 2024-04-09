@@ -3,6 +3,7 @@ package com.pfm.transaction.service;
 import com.pfm.transaction.exception.TransactionNotFoundException;
 import com.pfm.transaction.repository.model.TransactionEntity;
 import com.pfm.transaction.repository.TransactionRepository;
+import com.pfm.transaction.service.dto.CategoryUpdateDTO;
 import com.pfm.transaction.service.dto.TransactionDTO;
 import com.pfm.transaction.service.mapper.TransactionMapper;
 import jakarta.persistence.EntityNotFoundException;
@@ -89,7 +90,22 @@ public class TransactionService {
     }
 
     @Transactional
+    public TransactionDTO updateTransactionCategory(Long id, CategoryUpdateDTO categoryUpdateDTO) {
+        TransactionEntity transactionEntity = transactionRepository.findById(id)
+                .orElseThrow(() -> new TransactionNotFoundException("Transaction with ID " + id + " not found"));
+
+        transactionEntity.setCategoryId(categoryUpdateDTO.getCategoryId());
+
+        TransactionEntity updatedTransaction = transactionRepository.save(transactionEntity);
+        return TRANSACTION_MAPPER.toTransactionDTO(updatedTransaction);
+    }
+
+    @Transactional
     public void deleteTransaction(Long id) {
+        boolean exists = transactionRepository.existsById(id);
+        if (!exists) {
+            throw new TransactionNotFoundException("Transaction with ID " + id + " not found");
+        }
         transactionRepository.deleteById(id);
     }
 
