@@ -31,6 +31,12 @@ public class TransactionController {
         return new ResponseEntity<>(transactionService.saveTransaction(transactionDTO), HttpStatus.CREATED);
     }
 
+    @PostMapping("/bulk")
+    public ResponseEntity<List<TransactionDTO>> createTransactions(@RequestBody List<TransactionDTO> transactionDTOs) {
+        List<TransactionDTO> createdTransactions = transactionService.saveTransactions(transactionDTOs);
+        return new ResponseEntity<>(createdTransactions, HttpStatus.CREATED);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<TransactionDTO> getTransaction(@PathVariable Long id) {
         TransactionDTO transaction = transactionService.getTransactionById(id);

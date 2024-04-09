@@ -36,6 +36,18 @@ public class TransactionService {
         return TRANSACTION_MAPPER.toTransactionDTO(savedEntity);
     }
 
+    @Transactional
+    public List<TransactionDTO> saveTransactions(List<TransactionDTO> transactionDTOs) {
+        // Convert DTOs to entities
+        List<TransactionEntity> entities = TRANSACTION_MAPPER.toTransactionEntityList(transactionDTOs);
+
+        // Save all transactions to the database
+        List<TransactionEntity> savedEntities = transactionRepository.saveAll(entities);
+
+        // Convert saved entities back to DTOs
+        return TRANSACTION_MAPPER.toTransactionDTOList(savedEntities);
+    }
+
     @Transactional(readOnly = true)
     public TransactionDTO getTransactionById(Long id) {
         return transactionRepository.findById(id)
