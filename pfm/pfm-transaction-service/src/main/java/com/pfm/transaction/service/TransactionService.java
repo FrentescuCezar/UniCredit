@@ -115,10 +115,8 @@ public class TransactionService {
         Date start = Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
         Date end = Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
-        // Fetch transactions
         List<TransactionEntity> transactions = transactionRepository.findByDateBetween(start, end);
 
-        // Convert to DTOs
         return transactions.stream()
                 .map(TRANSACTION_MAPPER::toTransactionDTO)
                 .collect(Collectors.toList());
