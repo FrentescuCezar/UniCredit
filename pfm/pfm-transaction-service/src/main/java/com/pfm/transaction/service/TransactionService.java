@@ -5,13 +5,14 @@ import com.pfm.transaction.repository.model.TransactionEntity;
 import com.pfm.transaction.repository.TransactionRepository;
 import com.pfm.transaction.service.dto.CategoryUpdateDTO;
 import com.pfm.transaction.service.dto.TransactionDTO;
-import com.pfm.transaction.service.mapper.TransactionMapper;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.pfm.transaction.service.mapper.TransactionMapper.*;
 
@@ -109,15 +110,17 @@ public class TransactionService {
         transactionRepository.deleteById(id);
     }
 
-    @Transactional
-    public List<Map<String, Object>> getTransactionBetweenDates(Date startDate, Date endDate) {
-        return transactionRepository.getTransactionBetweenDates(startDate, endDate).stream()
-                .map(te -> {
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("date", te.getDate());
-                    map.put("amount", te.getAmount());
-                    return map;
-                })
-                .toList();
+    public List<TransactionDTO> findTransactionsBetweenDates(LocalDate startDate, LocalDate endDate) {
+        // Convert LocalDate to Date
+        Date start = Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date end = Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        // Fetch transactions
+        List<TransactionEntity> transactions = transactionRepository.findByDateBetween(start, end);
+
+        // Convert to DTOs
+        return transactions.stream()
+                .map(TRANSACTION_MAPPER::toTransactionDTO)
+                .collect(Collectors.toList());
     }
 }

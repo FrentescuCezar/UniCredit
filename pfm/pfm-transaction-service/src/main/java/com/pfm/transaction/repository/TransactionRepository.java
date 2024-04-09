@@ -12,8 +12,5 @@ import java.util.List;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<TransactionEntity, Long> {
-
-    @Query("SELECT te FROM TransactionEntity te WHERE te.date >= ?1 AND te.date <= ?2")
-    public List<TransactionEntity> getTransactionBetweenDates(Date startDate, Date endDate);
-
+    List<TransactionEntity> findByDateBetween(Date startDate, Date endDate);
 }

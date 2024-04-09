@@ -11,9 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -65,10 +64,12 @@ public class TransactionController {
     }
 
 
-    @GetMapping("/summary")
-    public ResponseEntity<List<Map<String, Object>>> getTransactionBetweenDates(@RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
-                                                                                @RequestParam("end") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date endDate) {
-        List<Map<String, Object>> transactionDTOs = transactionService.getTransactionBetweenDates(startDate, endDate);
-        return ResponseEntity.ok(transactionDTOs);
+    @GetMapping("/date-range")
+    public ResponseEntity<List<TransactionDTO>> getTransactionsBetweenDates(
+            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+
+        List<TransactionDTO> transactions = transactionService.findTransactionsBetweenDates(startDate, endDate);
+        return ResponseEntity.ok(transactions);
     }
 }
