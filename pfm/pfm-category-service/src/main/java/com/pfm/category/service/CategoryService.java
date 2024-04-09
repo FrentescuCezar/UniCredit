@@ -1,6 +1,7 @@
 package com.pfm.category.service;
 
 import com.pfm.category.exception.CategoryNotFoundException;
+import com.pfm.category.repository.CategoryRepository;
 import com.pfm.category.service.dto.TransactionDTO;
 import com.pfm.category.repository.KeywordRepository;
 import com.pfm.category.repository.model.KeywordEntity;
@@ -15,8 +16,7 @@ import java.util.stream.Collectors;
 public class CategoryService {
 
     private final KeywordRepository keywordRepository;
-    private final KeywordService keywordService;
-
+    private final CategoryRepository categoryRepository;
     public Long findCategoryForTransaction(TransactionDTO transaction) {
         List<KeywordEntity> keywordList = findCategoryForTransactionWithoutPattern(transaction.getDescription());
         return determineCategory(keywordList);
@@ -56,6 +56,9 @@ public class CategoryService {
         return mostCommonParentCategoryId;
     }
 
+    public boolean existsById(Long id) {
+        return categoryRepository.existsById(id);
+    }
 
 
 
