@@ -27,7 +27,7 @@ public class TransactionUpdateService {
             throw new CategoryNotFoundException("Category with ID " + categoryId + " not found");
         }
 
-        String url = transactionServiceUrl + "/api/transactions/" + transactionId + "/category";
+        String url = transactionServiceUrl + "/api/transactions/{transactionId}/category";
 
         CategoryUpdateDTO categoryUpdateDTO = new CategoryUpdateDTO();
         categoryUpdateDTO.setCategoryId(categoryId);
@@ -37,7 +37,8 @@ public class TransactionUpdateService {
                 url,
                 HttpMethod.PUT,
                 requestEntity,
-                TransactionDTO.class
+                TransactionDTO.class,
+                transactionId
         );
 
         if (!response.getStatusCode().is2xxSuccessful()) {
@@ -56,7 +57,7 @@ public class TransactionUpdateService {
                 url,
                 HttpMethod.POST,
                 requestEntity,
-                new ParameterizedTypeReference<List<TransactionDTO>>() {
+                new ParameterizedTypeReference<>() {
                 }
         );
 
