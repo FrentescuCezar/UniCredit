@@ -13,6 +13,6 @@ public class ApiErrorResponse {
     private int status;
     private String message;
     private LocalDateTime timestamp;
-    private List<String> validationErrors; // A list to hold detailed validation errors
+    private List<String> validationErrors;
 }
 
