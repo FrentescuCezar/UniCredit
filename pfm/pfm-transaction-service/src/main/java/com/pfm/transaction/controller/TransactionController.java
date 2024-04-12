@@ -5,6 +5,8 @@ import com.pfm.transaction.service.dto.CategoryUpdateDTO;
 import com.pfm.transaction.service.dto.OnUpdate;
 import com.pfm.transaction.service.dto.TransactionDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,11 @@ public class TransactionController {
     @GetMapping
     public ResponseEntity<List<TransactionDTO>> getAllTransactions() {
         return ResponseEntity.ok(transactionService.getAllTransactions());
+    }
+
+    @GetMapping("/pageable")
+    public ResponseEntity<Page<TransactionDTO>> getAllTransactionsPageable(Pageable pageable) {
+        return ResponseEntity.ok(transactionService.getAllTransactionsPageable(pageable));
     }
 
     @PostMapping

@@ -7,6 +7,8 @@ import com.pfm.transaction.service.dto.CategoryUpdateDTO;
 import com.pfm.transaction.service.dto.TransactionDTO;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +30,11 @@ public class TransactionService {
         return transactionRepository.findAll().stream()
                 .map(TRANSACTION_MAPPER::toTransactionDTO)
                 .toList();
+    }
+
+    public Page<TransactionDTO> getAllTransactionsPageable(Pageable pageable) {
+        Page<TransactionEntity> entities = transactionRepository.findAll(pageable);
+        return entities.map(TRANSACTION_MAPPER::toTransactionDTO);
     }
 
     @Transactional
