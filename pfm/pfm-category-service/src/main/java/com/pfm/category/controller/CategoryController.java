@@ -4,9 +4,11 @@ import com.pfm.category.service.TransactionUpdateService;
 import com.pfm.category.service.dto.TransactionDTO;
 import com.pfm.category.service.CategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,5 +26,11 @@ public class CategoryController {
     public ResponseEntity<TransactionDTO> updateTransactionCategory(@RequestParam Long transactionId, @RequestParam Long categoryId) {
 
         return ResponseEntity.ok(transactionUpdateService.updateTransactionCategory(transactionId, categoryId));
+    }
+
+    @PostMapping
+    public ResponseEntity<List<TransactionDTO>> splitTransaction(@RequestParam Long parentId, @RequestBody List<TransactionDTO> transactionDTOs) {
+        List<TransactionDTO> createdTransactions = transactionUpdateService.splitTransaction(parentId, transactionDTOs);
+        return new ResponseEntity<>(createdTransactions, HttpStatus.CREATED);
     }
 }
