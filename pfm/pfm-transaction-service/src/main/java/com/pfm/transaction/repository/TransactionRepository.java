@@ -15,6 +15,6 @@ import java.util.List;
 @Repository
 public interface TransactionRepository extends JpaRepository<TransactionEntity, Long> {
     List<TransactionEntity> findByDateBetween(Date startDate, Date endDate);
-    Page<TransactionEntity> findAll(Pageable pageable);
+    Page<TransactionEntity> findAllByOrderByDateDesc(Pageable pageable);
 
 }

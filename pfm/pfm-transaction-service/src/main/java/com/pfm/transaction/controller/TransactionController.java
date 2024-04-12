@@ -29,8 +29,11 @@ public class TransactionController {
     }
 
     @GetMapping("/pageable")
-    public ResponseEntity<Page<TransactionDTO>> getAllTransactionsPageable(Pageable pageable) {
-        return ResponseEntity.ok(transactionService.getAllTransactionsPageable(pageable));
+    public ResponseEntity<Page<TransactionDTO>> getTransactions(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<TransactionDTO> transactions = transactionService.getAllTransactionsPageable(page, size);
+        return ResponseEntity.ok(transactions);
     }
 
     @PostMapping
