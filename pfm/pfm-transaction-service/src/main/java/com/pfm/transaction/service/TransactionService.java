@@ -6,6 +6,7 @@ import com.pfm.transaction.repository.TransactionRepository;
 import com.pfm.transaction.service.dto.CategoryUpdateDTO;
 import com.pfm.transaction.service.dto.TransactionDTO;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,28 +51,29 @@ public class TransactionService {
                 .orElseThrow(() -> new TransactionNotFoundException("Transaction with id " + id + " not found"));
     }
 
+
     @Transactional
     public TransactionDTO updateTransaction(Long id, TransactionDTO transactionDTO) {
 
         TransactionEntity transactionEntity = transactionRepository.findById(id)
                 .orElseThrow(() -> new TransactionNotFoundException("Transaction with id " + id + " not found"));
 
-        if (transactionDTO.getDate() != null) {
+        if (ObjectUtils.isNotEmpty(transactionDTO.getDate())) {
             transactionEntity.setDate(transactionDTO.getDate());
         }
-        if (transactionDTO.getAmount() != null) {
+        if (ObjectUtils.isNotEmpty(transactionDTO.getAmount())) {
             transactionEntity.setAmount(transactionDTO.getAmount());
         }
-        if (transactionDTO.getCategoryId() != null) {
+        if (ObjectUtils.isNotEmpty(transactionDTO.getCategoryId())) {
             transactionEntity.setCategoryId(transactionDTO.getCategoryId());
         }
-        if (transactionDTO.getKeywordId() != null) {
+        if (ObjectUtils.isNotEmpty(transactionDTO.getKeywordId())) {
             transactionEntity.setKeywordId(transactionDTO.getKeywordId());
         }
-        if (transactionDTO.getParentId() != null) {
+        if (ObjectUtils.isNotEmpty(transactionDTO.getParentId())) {
             transactionEntity.setParentId(transactionDTO.getParentId());
         }
-        if (transactionDTO.getDescription() != null) {
+        if (ObjectUtils.isNotEmpty(transactionDTO.getDescription())) {
             transactionEntity.setDescription(transactionDTO.getDescription());
         }
 
