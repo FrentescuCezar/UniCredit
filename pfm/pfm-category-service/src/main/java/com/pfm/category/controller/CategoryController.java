@@ -1,6 +1,7 @@
 package com.pfm.category.controller;
 
 import com.pfm.category.service.TransactionUpdateService;
+import com.pfm.category.service.dto.CategoryDTO;
 import com.pfm.category.service.dto.TransactionDTO;
 import com.pfm.category.service.CategoryService;
 import lombok.RequiredArgsConstructor;
@@ -32,5 +33,11 @@ public class CategoryController {
     public ResponseEntity<List<TransactionDTO>> splitTransaction(@RequestParam Long parentId, @RequestBody List<TransactionDTO> transactionDTOs) {
         List<TransactionDTO> createdTransactions = transactionUpdateService.splitTransaction(parentId, transactionDTOs);
         return new ResponseEntity<>(createdTransactions, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long id) {
+        CategoryDTO categoryDTO = categoryService.getCategoryById(id);
+        return ResponseEntity.ok(categoryDTO);
     }
 }

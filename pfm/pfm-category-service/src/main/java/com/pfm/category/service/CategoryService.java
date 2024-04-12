@@ -3,14 +3,18 @@ package com.pfm.category.service;
 import com.pfm.category.exception.CategoryNotFoundException;
 import com.pfm.category.repository.CategoryRepository;
 import com.pfm.category.repository.model.CategoryEntity;
+import com.pfm.category.service.dto.CategoryDTO;
 import com.pfm.category.service.dto.TransactionDTO;
 import com.pfm.category.repository.KeywordRepository;
 import com.pfm.category.repository.model.KeywordEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.pfm.category.service.mapper.CategoryMapper.CATEGORY_MAPPER;
 
 @Service
 @RequiredArgsConstructor
@@ -60,6 +64,13 @@ public class CategoryService {
 
     public boolean existsById(Long id) {
         return categoryRepository.existsById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public CategoryDTO getCategoryById(Long id) {
+        CategoryEntity category = categoryRepository.findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException("Category not found with ID: " + id));
+        return CATEGORY_MAPPER.entityToDto(category);
     }
 
 
