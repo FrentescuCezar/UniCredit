@@ -38,13 +38,8 @@ public class TransactionService {
 
     @Transactional
     public List<TransactionDTO> saveTransactions(List<TransactionDTO> transactionDTOs) {
-        // Convert DTOs to entities
         List<TransactionEntity> entities = TRANSACTION_MAPPER.toTransactionEntityList(transactionDTOs);
-
-        // Save all transactions to the database
         List<TransactionEntity> savedEntities = transactionRepository.saveAll(entities);
-
-        // Convert saved entities back to DTOs
         return TRANSACTION_MAPPER.toTransactionDTOList(savedEntities);
     }
 
@@ -90,7 +85,6 @@ public class TransactionService {
         TransactionEntity transactionEntity = transactionRepository.findById(id)
                 .orElseThrow(() -> new TransactionNotFoundException("Transaction with id " + id + " not found"));
 
-        // Directly set all fields without checking for null, assuming validation passed.
         transactionEntity.setDate(transactionDTO.getDate());
         transactionEntity.setAmount(transactionDTO.getAmount());
         transactionEntity.setCategoryId(transactionDTO.getCategoryId());
@@ -123,7 +117,6 @@ public class TransactionService {
     }
 
     public List<TransactionDTO> findTransactionsBetweenDates(LocalDate startDate, LocalDate endDate) {
-        // Convert LocalDate to Date
         Date start = Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
         Date end = Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
