@@ -1,22 +1,18 @@
 package com.pfm.category.exception;
 
-import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
+import lombok.Builder;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.Data;
 
 @Data
+@Builder
 public class ApiErrorResponse {
-    private HttpStatus status;
+    private int status;
     private String message;
     private LocalDateTime timestamp;
-
-    public ApiErrorResponse(HttpStatus status, String message) {
-        this.status = status;
-        this.message = message;
-        this.timestamp = LocalDateTime.now();
-    }
-
+    private List<String> validationErrors; // A list to hold detailed validation errors
 }
+
