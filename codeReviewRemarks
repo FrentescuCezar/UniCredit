@@ -1,3 +1,55 @@
+pfm-transaction-service !! remove coments
+
+TransactionController
+- updateTransaction - return specific type, there is no need for generic types
+
+ApiErrorResponse
+- use builder and remove constructors, build the error when needed with correct parameters
+
+GlobalExceptionHandler
+- from java17 you can use .toList instead of .collect(Collectors.toList());
+
+TransactionEntity
+- remove same name columns ex: @Column(name = "date")
+- getTransactionById create function for message building
+- updateTransaction
+-> use ObjectUtils.isNotNull
+
+pfm-category-service
+KeywordController - not implemented, please remove
+ApiErrorResponse - same as above
+GlobalExceptionHandler
+- static import for HttpStatus.*
+
+KeywordRepository
+findByValueContaining - not used
+
+CategoryDTO
+- has no fields
+
+CategoryMapper/KeywordMapper - no used
+
+CategoryService
+- determineCategory 
+- line 50 rewrite:  .collect(Collectors.groupingBy(CategoryEntity::getId, Collectors.counting()));
+-return dirrectly  parentCategoryCounts.entrySet().stream()....
+
+KeywordService
+- filterKeywords - not used, really needed?
+
+TransactionUpdateService
+- build dinamically 
+TransactionUpdateService transactionServiceUrl -> with parameters :  transactionServiceUrl + "/api/transactions/{transactionId}/category" and update
+   ResponseEntity<TransactionDTO> response = restTemplate.exchange(
+                url,
+                HttpMethod.PUT,
+                requestEntity,
+                TransactionDTO.class,
+                transactionId
+        );
+
+###################################################################################################################################
+
 please see project structure -> not ok to have project in project !!
 
 pfm-category-service
