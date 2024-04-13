@@ -1,5 +1,6 @@
 package com.pfm.transaction.controller;
 
+import com.pfm.transaction.repository.model.TransactionEntity;
 import com.pfm.transaction.service.TransactionService;
 import com.pfm.transaction.service.dto.CategoryUpdateDTO;
 import com.pfm.transaction.service.dto.OnUpdate;
@@ -29,10 +30,10 @@ public class TransactionController {
     }
 
     @GetMapping("/pageable")
-    public ResponseEntity<Page<TransactionDTO>> getTransactions(
+    public ResponseEntity<Page<TransactionEntity>> getTransactions(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Page<TransactionDTO> transactions = transactionService.getAllTransactionsPageable(page, size);
+        Page<TransactionEntity> transactions = transactionService.getAllTransactionsPageable(page, size);
         return ResponseEntity.ok(transactions);
     }
 

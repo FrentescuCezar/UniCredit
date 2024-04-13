@@ -34,10 +34,9 @@ public class TransactionService {
                 .toList();
     }
 
-    public Page<TransactionDTO> getAllTransactionsPageable(int page, int size) {
+    public Page<TransactionEntity> getAllTransactionsPageable(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
-        Page<TransactionEntity> transactionEntities = transactionRepository.findAllByOrderByDateDesc(pageable);
-        return transactionEntities.map(TRANSACTION_MAPPER::toTransactionDTO);
+        return transactionRepository.findAllByOrderByDateDesc(pageable);
     }
 
     @Transactional
