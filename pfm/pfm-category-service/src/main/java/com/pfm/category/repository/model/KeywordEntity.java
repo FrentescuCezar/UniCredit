@@ -2,6 +2,7 @@ package com.pfm.category.repository.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.data.redis.core.RedisHash;
 
 @Data
 @Entity
