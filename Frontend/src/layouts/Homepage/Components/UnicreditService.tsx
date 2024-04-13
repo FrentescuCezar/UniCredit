@@ -22,7 +22,7 @@ export const UnicreditService = () => {
                                 Autentifică-te
                             </Link>
                             :
-                            <Link type='button' className='btn main-color-gray-button btn-lg' to='/monbuilder'>
+                            <Link type='button' className='btn main-color-gray-button btn-lg' to='/tranzactii'>
                                 Verifică-ți tranzacțiile
                             </Link>
                         }
