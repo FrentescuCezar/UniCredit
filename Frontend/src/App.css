@@ -1,0 +1,559 @@
+:root {
+  --mainOpacity: rgba(0, 0, 0, 0.55);
+}
+
+
+.dark-overlay {
+  background-color: rgba(0, 0, 0, 0.35);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* ########### ########## ###########*/
+.navbar-toggler-mobile {
+  display: none;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+@media (max-width: 911px) {
+  .navbar-toggler-mobile {
+    display: block;
+    color: black;
+  }
+}
+
+
+.main-color-gray {
+  background-color: #1f3593;
+  /* Replace with the shade of gray you want to use */
+  color: #ffffff;
+  /* Replace with the color you want to use for text and icons inside the navbar */
+}
+
+.main-color-gray-button {
+  background-color: #e8e8e8;
+  color: #333333;
+  font-weight: 600;
+}
+
+.bg-gray {
+  background-color: #888;
+}
+
+.main-color-red {
+  background-color: #ef2222;
+  /* Replace with the shade of gray you want to use */
+  color: #333333;
+  /* Replace with the color you want to use for text and icons inside the navbar */
+}
+
+.shadow-sm {
+  box-shadow: 0 20px 100px rgba(0, 0, 0, 0.5);
+  /* Replace with the shadow properties you want to use */
+}
+
+.btn-black-bold {
+  font-size: 1.35rem;
+  /* Replace with the desired font size */
+
+  /* Add bold weight */
+  color: rgb(255, 255, 255);
+  /* Set color to black */
+}
+
+.btn-black-bold:hover {
+  color: rgb(255, 0, 0);
+  /* Set rgb(205, 0, 0) to black */
+}
+
+.btn-red-hover {
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+  color: rgb(255, 255, 255);
+  font-size: 1.25rem;
+}
+
+.btn-red-hover:hover {
+  color: rgb(255, 0, 0);
+  background-color: transparent;
+}
+
+.footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 999;
+  display: none;
+  /* hide the footer by default */
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  background-color: #fcf9f9;
+}
+
+.wrapper.pb-5 {
+  padding-bottom: 100px;
+  /* add padding to the bottom of the page to make space for the footer */
+}
+
+/* show the footer when the user scrolls down */
+@media (min-height: 500px) {
+  .footer {
+    display: block;
+  }
+}
+
+.card {
+  max-width: 1200px;
+  /* adjust as needed */
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.card-img-top {
+  width: 150px;
+  /* adjust as needed */
+  height: 150px;
+  /* adjust as needed */
+  object-fit: contain;
+}
+
+
+@media (min-width: 992px) {
+  .guess-form {
+    width: 50%;
+  }
+}
+
+@media (max-width: 991px) {
+  .guess-form {
+    width: 95%;
+  }
+}
+
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.pulse-animation {
+  animation: pulse 0.5s ease;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.transaction-card {
+  width: 100%;
+  /* Makes the card take full width of the column, adjust as necessary */
+}
+
+.transaction-header {
+  background-color: #f8f9fa;
+  /* Light gray background for the header, similar to Bootstrap's light theme */
+  padding: 0.75rem 1.25rem;
+  /* Padding similar to card-body */
+  border-bottom: 1px solid #e3e6f0;
+  /* Slight border for separation, similar to Bootstrap's card styling */
+  font-size: 1rem;
+  /* Medium font size for headers */
+}
+
+.card-text-small {
+  font-size: 0.8rem;
+  /* Smaller text for descriptions */
+}
+
+.card-body {
+  padding: 0.75rem 1.25rem;
+  /* Consistent padding with header */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ########### ########### ###########*/
+
+
+header {
+  position: relative;
+}
+
+.map-container {
+  height: 600px;
+  /* Adjust the height as needed */
+}
+
+.map-container iframe {
+  width: 100%;
+  height: 500px;
+}
+
+
+.image-gallery-image {
+  width: 50%;
+  height: auto;
+}
+
+.image-gallery-slide img {
+  width: 100%;
+  height: auto;
+  max-height: 80vh;
+  object-fit: cover;
+  overflow: hidden;
+  object-position: center center;
+}
+
+.fullscreen .image-gallery-slide img {
+  max-height: 100vh;
+}
+
+
+
+
+.main-color {
+  background-color: #a80e0e;
+}
+
+
+.col-image-right {
+  background-image: url("./Images/PublicImages/image-1.jpg");
+  height: 25em !important;
+}
+
+.container {
+  position: relative;
+}
+
+.text-content {
+  z-index: 2;
+  /* Ensures text is above the image */
+  position: relative;
+  /* Needed for z-index to take effect */
+  color: white;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.lost-image {
+  background-image: url("./Images/PublicImages/image-1.jpg");
+  background-color: #ffffff;
+  height: auto;
+  /* Let the height be determined by the content */
+  width: 100%;
+  /* Full width to use available horizontal space */
+  background-repeat: no-repeat;
+  background-size: 60%;
+  /* Cover will ensure no white space, adjust as needed */
+  background-position: right center;
+  /* Center the image */
+  z-index: 1;
+  /* Image is below the text */
+  position: absolute;
+  /* Absolute positioning */
+  top: 0;
+  /* Align top to the container */
+  right: 0;
+  /* Align right to the container */
+  bottom: 0;
+  /* Align bottom to the container */
+  left: 0;
+  /* Align left to the container */
+
+  animation-name: fadeIn;
+  animation-duration: 1s;
+  /* This is the time the animation takes to complete */
+  animation-fill-mode: forwards;
+  /* Keeps the image visible after the animation completes */
+}
+
+
+.lost-image::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to left, rgba(255, 255, 255, 0) 0%, rgb(28, 47, 133) 60%);
+  pointer-events: none;
+  /* Ensures clicks pass through to elements below */
+}
+
+.navbar {
+  background-color: #1f3593;
+  color: #333333;
+}
+
+.circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  border: 3px solid #000000;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.circle-toggle {
+  width: 100%;
+  height: 100%;
+  border: none !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+}
+
+.circle-toggle:focus {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.custom-slider {
+  width: 20%;
+  height: 10px;
+  margin: 10px 0;
+  background-color: #ddd;
+}
+
+.custom-slider input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 5px;
+  background-color: #e81a1a;
+  outline: none;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+@media (max-width: 576px) {
+  .pokemon-image {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+@media (min-width: 577px) {
+  .pokemon-image {
+    width: 512px;
+    height: 512px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+.bubble {
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 30px;
+  /* Increase to make more bubbly */
+  max-width: 80%;
+  min-width: 20%;
+  margin-bottom: 20px;
+  border: 1px solid #000000;
+  position: relative;
+  overflow-wrap: break-word;
+}
+
+.trainer-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.trainer-container .trainer-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.trainer-container.trainer1 .bubble {
+  margin-right: 200px;
+  margin-bottom: 250px;
+}
+
+.trainer-container.trainer1 .bubble::after,
+.trainer-container.trainer1 .bubble::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 0;
+  height: 0;
+  border: 20px solid transparent;
+  border-right-color: #f9f9f9;
+  border-left: 0;
+  border-bottom: 0;
+  margin-top: -12px;
+  margin-left: -20px;
+}
+
+
+.trainer-container.trainer1 .bubble::before {
+  border-right-color: #000000;
+  margin-left: -19px;
+  /* Adjust according to the bubble border width */
+  margin-top: -15px;
+  /* Adjust according to the bubble border width */
+  z-index: -3;
+}
+
+.trainer-container.trainer1 .trainer-section button {
+  margin-top: 15px;
+  margin-left: 36px;
+  /* Adjust this value as needed */
+}
+
+.trainer-container.trainer2 .trainer-section button {
+  margin-top: 15px;
+  margin-right: -10px;
+  /* Adjust this value as needed */
+}
+
+.trainer-container.reverse .trainer-section {
+  align-items: flex-end;
+}
+
+.trainer-container.trainer2 .bubble {
+  margin-right: 20px;
+}
+
+.trainer-container.trainer2 .bubble::after,
+.trainer-container.trainer2 .bubble::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 0;
+  height: 0;
+  border: 20px solid transparent;
+  border-left-color: #f9f9f9;
+  border-right: 0;
+  border-bottom: 0;
+  margin-top: -20px;
+  margin-right: -20px;
+}
+
+
+.trainer-container.trainer2 .bubble::before {
+  border-left-color: #000000;
+  margin-right: -21px;
+  /* Adjust according to the bubble border width */
+  margin-top: -21px;
+  /* Adjust according to the bubble border width */
+  z-index: -1;
+}
+
+
+
+.trainer-container.reverse {
+  flex-direction: row-reverse;
+}
+
+
+.horizontal-line {
+  width: 100%;
+  /* or specify a specific height */
+  background-color: black;
+  /* or any desired color */
+}
+
+
+
+/* set the height based on the width to make it a square */
+
+
+.homepage-carousel-title {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.book-div {
+  width: 480px;
+  height: 384px;
+}
+
+.inactiveLink {
+  pointer-events: none;
+  cursor: default;
+}
