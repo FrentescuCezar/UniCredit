@@ -29,6 +29,12 @@ public class CategoryController {
         return ResponseEntity.ok(transactionUpdateService.updateTransactionCategory(transactionId, categoryId));
     }
 
+    @PostMapping("autoUpdateCategory/{transactionId}")
+    public ResponseEntity<TransactionDTO> autoUpdateTransactionCategory(@PathVariable Long transactionId, @RequestBody TransactionDTO transactionDTO) {
+        TransactionDTO updatedTransaction = transactionUpdateService.autoUpdateTransactionCategory(transactionId, transactionDTO);
+        return ResponseEntity.ok(updatedTransaction);
+    }
+
     @PostMapping
     public ResponseEntity<List<TransactionDTO>> splitTransaction(@RequestParam Long parentId, @RequestBody List<TransactionDTO> transactionDTOs) {
         List<TransactionDTO> createdTransactions = transactionUpdateService.splitTransaction(parentId, transactionDTOs);

@@ -56,9 +56,39 @@ const TransactionPage: React.FC = () => {
         };
 
         fetchTransactions();
-    }, [currentPage]);
+    }, [currentPage, transactions]);
 
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+    const handleFindCategory = async (transaction: Transaction) => {
+        const { id, date, amount, categoryId, keywordId, parentId, description } = transaction;
+        try {
+            const response = await fetch(`http://localhost:8082/api/categories/autoUpdateCategory/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    date,
+                    amount,
+                    categoryId,
+                    keywordId,
+                    parentId,
+                    description
+                })
+            });
+            if (!response.ok) {
+                throw new Error('Failed to update transaction category');
+            }
+            const updatedTransaction: Transaction = await response.json();
+            setTransactions(transactions.map(t => t.id === updatedTransaction.id ? updatedTransaction : t));
+        } catch (error) {
+            console.error('Error updating transaction category:', error);
+        }
+    };
+
+
+
 
     return (
         <div>
@@ -77,7 +107,7 @@ const TransactionPage: React.FC = () => {
                                     Amount: {transaction.amount.toFixed(2)}
                                 </p>
                                 <div className="d-flex justify-content-end">
-                                    <button className="btn btn-primary btn-sm m-1">View</button>
+                                    <button className="btn btn-primary btn-sm m-1" onClick={() => handleFindCategory(transaction)}>Find Category</button>
                                     <button className="btn btn-warning btn-sm m-1">Edit</button>
                                     <button className="btn btn-danger btn-sm m-1">Delete</button>
                                 </div>

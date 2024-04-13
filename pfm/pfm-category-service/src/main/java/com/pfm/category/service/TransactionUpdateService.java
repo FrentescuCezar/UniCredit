@@ -68,5 +68,15 @@ public class TransactionUpdateService {
         return response.getBody();
     }
 
+    public TransactionDTO autoUpdateTransactionCategory(Long transactionId, TransactionDTO transactionDTO) {
+        Long categoryId = categoryService.findCategoryForTransaction(transactionDTO);
+
+        if (categoryId == null) {
+            throw new CategoryNotFoundException("No category found for the given transaction");
+        }
+
+        return updateTransactionCategory(transactionId, categoryId);
+    }
+
 
 }
