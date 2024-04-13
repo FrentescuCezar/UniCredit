@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { Pagination } from '../Utils/Pagination';
 import Transaction from '../../models/Transaction';
-import Category from '../../models/Category'; // Import the Category class
+import Category from '../../models/Category';
+import Modal from 'react-modal';
+
 
 const TransactionPage: React.FC = () => {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [totalPages, setTotalPages] = useState<number>(0);
+    const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+    const [categoryHistory, setCategoryHistory] = useState<number[]>([]);
+
+
 
     useEffect(() => {
         const fetchTransactions = async () => {
@@ -26,7 +34,6 @@ const TransactionPage: React.FC = () => {
                         transactionData.keywordId,
                         transactionData.parentId
                     );
-                    console.log(transaction);
                     if (transaction.categoryId) {
                         try {
                             const categoryResponse = await fetch(`http://localhost:8082/api/categories/${transaction.categoryId}`);
@@ -34,7 +41,9 @@ const TransactionPage: React.FC = () => {
                                 throw new Error('Failed to fetch category');
                             }
                             const categoryData = await categoryResponse.json();
-                            const category = new Category(categoryData.id, categoryData.value);
+                            const category = new Category(categoryData.id, null, categoryData.value);
+
+
                             transaction.categoryName = category.name;
                         } catch (error) {
                             console.error('Error fetching category:', error);
@@ -89,6 +98,61 @@ const TransactionPage: React.FC = () => {
 
 
 
+    const openModal = (transaction: Transaction) => {
+        fetchCategories();
+        setSelectedTransaction(transaction);
+        setModalIsOpen(true);
+    };
+
+    const closeModal = () => {
+        setModalIsOpen(false);
+    };
+
+    const fetchCategories = async (parentId?: number) => {
+        const url = parentId === undefined ?
+            'http://localhost:8082/api/categories/categories/top-level' :
+            `http://localhost:8082/api/categories/categories/by-parent?parentId=${parentId}`;
+        try {
+            const response = await fetch(url);
+            const categoryData: { id: number, parentId: number | null, value: string }[] = await response.json();
+            const categories = categoryData.map(cat => new Category(cat.id, cat.parentId, cat.value));
+            setCategories(categories);
+
+            // Update the category history stack, if we are fetching subcategories
+            if (parentId !== undefined) {
+                setCategoryHistory(prevHistory => [...prevHistory, parentId]);
+            } else {
+                // Reset the history if we're fetching top-level categories
+                setCategoryHistory([]);
+            }
+
+        } catch (error) {
+            console.error('Failed to fetch categories:', error);
+            // Optionally handle errors, e.g., show an error message in the UI
+        }
+    };
+
+    const goBackToPreviousCategory = () => {
+        setCategoryHistory(prevHistory => {
+            const newHistory = [...prevHistory];
+            newHistory.pop(); // Remove the last entry
+            const parentId = newHistory[newHistory.length - 1] || undefined; // Get the new last entry
+            fetchCategories(parentId); // Fetch the parent category
+            return newHistory; // Update the history stack
+        });
+    };
+
+
+    const updateTransactionCategory = async (categoryId: number) => {
+        if (!selectedTransaction) return;
+        const url = `http://localhost:8082/api/categories/updateTransactionCategory?transactionId=${selectedTransaction.id}&categoryId=${categoryId}`;
+        const response = await fetch(url, { method: 'POST' });
+        const updatedTransaction = await response.json();
+        setTransactions(transactions.map(t => t.id === updatedTransaction.id ? updatedTransaction : t));
+        closeModal();
+    };
+
+
 
     return (
         <div>
@@ -108,7 +172,7 @@ const TransactionPage: React.FC = () => {
                                 </p>
                                 <div className="d-flex justify-content-end">
                                     <button className="btn btn-primary btn-sm m-1" onClick={() => handleFindCategory(transaction)}>Find Category</button>
-                                    <button className="btn btn-warning btn-sm m-1">Edit</button>
+                                    <button className="btn btn-warning btn-sm m-1" onClick={() => openModal(transaction)}>Edit</button>
                                     <button className="btn btn-danger btn-sm m-1">Delete</button>
                                 </div>
                             </div>
@@ -117,6 +181,40 @@ const TransactionPage: React.FC = () => {
                 ))}
             </div>
             <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
+
+            <Modal
+                isOpen={modalIsOpen}
+                onRequestClose={closeModal}
+                contentLabel="Category Selection Modal"
+                className="Modal"
+                overlayClassName="Overlay"
+            >
+                <div className="modal-header">
+                    <h5 className="modal-title">Select a Category</h5>
+                    <button type="button" className="btn-close" onClick={closeModal}></button>
+                </div>
+                <div className="modal-body">
+                    {categories.map((category) => (
+                        <div key={category.id} className="card mb-3">
+                            <div className="card-body">
+                                <h5 className="card-title">{category.name}</h5>
+                                <div className="card-text">
+                                    <button className="btn   btn-warning  btn-sm m-1" onClick={() => fetchCategories(category.id)}>More subcategories</button>
+                                    <button className="btn  btn-primary btn-sm m-1" onClick={() => updateTransactionCategory(category.id)}>Select</button>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+                <div className="modal-footer">
+                    {categoryHistory.length > 0 && (
+                        <button type="button" className="btn btn-secondary" onClick={goBackToPreviousCategory}>
+                            Back
+                        </button>
+                    )}
+                    <button type="button" className="btn btn-secondary" onClick={closeModal}>Close</button>
+                </div>
+            </Modal>
         </div>
     );
 }

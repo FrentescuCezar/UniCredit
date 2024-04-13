@@ -223,7 +223,49 @@
 
 
 
+/* Custom Modal Styles */
+.Modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
 
+  transform: translate(-50%, -50%);
+
+  /* Control the maximum height */
+
+  /* Enable vertical scroll */
+  background: #fff;
+
+  /* Slight rounding of corners */
+
+  padding: 20px;
+  width: auto;
+  /* Adjust width as necessary, or use breakpoints for responsiveness */
+}
+
+.Overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  /* Dimmed overlay background */
+}
+
+/* Bootstrap overrides for react-modal */
+.modal-body {
+  max-height: calc(100vh - 210px);
+  overflow-y: auto;
+}
+
+.modal-header,
+.modal-footer {
+  border-bottom: none;
+  border-top: none;
+}
 
 
 

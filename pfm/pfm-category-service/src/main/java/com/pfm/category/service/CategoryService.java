@@ -73,5 +73,12 @@ public class CategoryService {
         return CATEGORY_MAPPER.entityToDto(category);
     }
 
+    public List<CategoryDTO> getTopLevelCategories() {
+        return categoryRepository.findAllTopLevelCategories();
+    }
+
+    public List<CategoryDTO> getCategoriesByParentId(Long parentId) {
+        return categoryRepository.findAllByParentId(parentId);
+    }
 
 }

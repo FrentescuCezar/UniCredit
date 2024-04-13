@@ -46,4 +46,14 @@ public class CategoryController {
         CategoryDTO categoryDTO = categoryService.getCategoryById(id);
         return ResponseEntity.ok(categoryDTO);
     }
+
+    @GetMapping("/categories/top-level")
+    public List<CategoryDTO> getTopLevelCategories() {
+        return categoryService.getTopLevelCategories();
+    }
+
+    @GetMapping("/categories/by-parent")
+    public List<CategoryDTO> getCategoriesByParentId(@RequestParam Long parentId) {
+        return categoryService.getCategoriesByParentId(parentId);
+    }
 }
