@@ -47,10 +47,10 @@ const TransactionPage: React.FC = () => {
                             transaction.categoryName = category.name;
                         } catch (error) {
                             console.error('Error fetching category:', error);
-                            transaction.categoryName = 'Category Unavailable'; // Set default or error-specific category name
+                            transaction.categoryName = 'Category Unavailable';
                         }
                     } else {
-                        transaction.categoryName = 'No Category'; // Set a default value for transactions without a categoryId
+                        transaction.categoryName = 'No Category';
                     }
 
                     return transaction;
@@ -60,7 +60,6 @@ const TransactionPage: React.FC = () => {
                 setTotalPages(data.totalPages);
             } catch (error) {
                 console.error('Failed to fetch transactions:', error);
-                // Handle the error state as appropriate
             }
         };
 
@@ -118,27 +117,24 @@ const TransactionPage: React.FC = () => {
             const categories = categoryData.map(cat => new Category(cat.id, cat.parentId, cat.value));
             setCategories(categories);
 
-            // Update the category history stack, if we are fetching subcategories
             if (parentId !== undefined) {
                 setCategoryHistory(prevHistory => [...prevHistory, parentId]);
             } else {
-                // Reset the history if we're fetching top-level categories
                 setCategoryHistory([]);
             }
 
         } catch (error) {
             console.error('Failed to fetch categories:', error);
-            // Optionally handle errors, e.g., show an error message in the UI
         }
     };
 
     const goBackToPreviousCategory = () => {
         setCategoryHistory(prevHistory => {
             const newHistory = [...prevHistory];
-            newHistory.pop(); // Remove the last entry
-            const parentId = newHistory[newHistory.length - 1] || undefined; // Get the new last entry
-            fetchCategories(parentId); // Fetch the parent category
-            return newHistory; // Update the history stack
+            newHistory.pop();
+            const parentId = newHistory[newHistory.length - 1] || undefined;
+            fetchCategories(parentId);
+            return newHistory;
         });
     };
 
