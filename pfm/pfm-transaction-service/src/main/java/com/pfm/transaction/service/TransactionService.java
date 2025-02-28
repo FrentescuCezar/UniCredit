@@ -1,8 +1,10 @@
 package com.pfm.transaction.service;
 
 import com.pfm.transaction.exception.TransactionNotFoundException;
-import com.pfm.transaction.repository.model.TransactionEntity;
+import com.pfm.transaction.redis.TransactionCacheService;
 import com.pfm.transaction.repository.TransactionRepository;
+import com.pfm.transaction.repository.model.TransactionEntity;
+
 import com.pfm.transaction.service.dto.CategoryUpdateDTO;
 import com.pfm.transaction.service.dto.TransactionDTO;
 import lombok.RequiredArgsConstructor;
@@ -16,18 +18,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.pfm.transaction.service.mapper.TransactionMapper.*;
+import static com.pfm.transaction.service.mapper.TransactionMapper.TRANSACTION_MAPPER;
 
 @Service
 @RequiredArgsConstructor
 public class TransactionService {
 
     private final TransactionRepository transactionRepository;
-
-
+    private final TransactionCacheService cacheService;
     public List<TransactionDTO> getAllTransactions() {
         return transactionRepository.findAll().stream()
                 .map(TRANSACTION_MAPPER::toTransactionDTO)
@@ -43,27 +45,39 @@ public class TransactionService {
     public TransactionDTO saveTransaction(TransactionDTO transactionDTO) {
         TransactionEntity transactionEntity = TRANSACTION_MAPPER.toTransactionEntity(transactionDTO);
         TransactionEntity savedEntity = transactionRepository.save(transactionEntity);
-        return TRANSACTION_MAPPER.toTransactionDTO(savedEntity);
+        TransactionDTO savedTransaction = TRANSACTION_MAPPER.toTransactionDTO(savedEntity);
+
+        cacheService.cacheTransaction(savedTransaction.getDate().getTime(), savedTransaction);
+        return savedTransaction;
     }
 
     @Transactional
     public List<TransactionDTO> saveTransactions(List<TransactionDTO> transactionDTOs) {
         List<TransactionEntity> entities = TRANSACTION_MAPPER.toTransactionEntityList(transactionDTOs);
         List<TransactionEntity> savedEntities = transactionRepository.saveAll(entities);
-        return TRANSACTION_MAPPER.toTransactionDTOList(savedEntities);
+        List<TransactionDTO> savedTransactions = TRANSACTION_MAPPER.toTransactionDTOList(savedEntities);
+
+        savedTransactions.forEach(tx -> cacheService.cacheTransaction(tx.getDate().getTime(), tx));
+        return savedTransactions;
     }
 
     @Transactional(readOnly = true)
     public TransactionDTO getTransactionById(Long id) {
-        return transactionRepository.findById(id)
+        TransactionDTO cachedTransaction = cacheService.getCachedTransaction(id);
+        if (cachedTransaction != null) {
+            return cachedTransaction;
+        }
+
+        TransactionDTO transaction = transactionRepository.findById(id)
                 .map(TRANSACTION_MAPPER::toTransactionDTO)
                 .orElseThrow(() -> new TransactionNotFoundException("Transaction with id " + id + " not found"));
-    }
 
+        cacheService.cacheTransaction(id, transaction);
+        return transaction;
+    }
 
     @Transactional
     public TransactionDTO updateTransaction(Long id, TransactionDTO transactionDTO) {
-
         TransactionEntity transactionEntity = transactionRepository.findById(id)
                 .orElseThrow(() -> new TransactionNotFoundException("Transaction with id " + id + " not found"));
 
@@ -87,8 +101,11 @@ public class TransactionService {
         }
 
         TransactionEntity updatedEntity = transactionRepository.save(transactionEntity);
+        TransactionDTO updatedTransaction = TRANSACTION_MAPPER.toTransactionDTO(updatedEntity);
 
-        return TRANSACTION_MAPPER.toTransactionDTO(updatedEntity);
+        // Update cache
+        cacheService.cacheTransaction(id, updatedTransaction);
+        return updatedTransaction;
     }
 
     @Transactional
@@ -104,7 +121,11 @@ public class TransactionService {
         transactionEntity.setDescription(transactionDTO.getDescription());
 
         TransactionEntity updatedEntity = transactionRepository.save(transactionEntity);
-        return TRANSACTION_MAPPER.toTransactionDTO(updatedEntity);
+        TransactionDTO updatedTransaction = TRANSACTION_MAPPER.toTransactionDTO(updatedEntity);
+
+        // Update cache
+        cacheService.cacheTransaction(id, updatedTransaction);
+        return updatedTransaction;
     }
 
     @Transactional
@@ -115,7 +136,10 @@ public class TransactionService {
         transactionEntity.setCategoryId(categoryUpdateDTO.getCategoryId());
 
         TransactionEntity updatedTransaction = transactionRepository.save(transactionEntity);
-        return TRANSACTION_MAPPER.toTransactionDTO(updatedTransaction);
+        TransactionDTO updatedTransactionDTO = TRANSACTION_MAPPER.toTransactionDTO(updatedTransaction);
+
+        cacheService.cacheTransaction(id, updatedTransactionDTO);
+        return updatedTransactionDTO;
     }
 
     @Transactional
@@ -125,6 +149,8 @@ public class TransactionService {
             throw new TransactionNotFoundException("Transaction with ID " + id + " not found");
         }
         transactionRepository.deleteById(id);
+
+        cacheService.evictTransactionCache(id);
     }
 
     public List<TransactionDTO> findTransactionsBetweenDates(LocalDate startDate, LocalDate endDate) {

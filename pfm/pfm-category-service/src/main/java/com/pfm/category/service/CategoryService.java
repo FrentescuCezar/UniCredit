@@ -54,12 +54,10 @@ public class CategoryService {
                 .filter(Objects::nonNull)
                 .collect(Collectors.groupingBy(CategoryEntity::getId, Collectors.counting()));
 
-        Long mostCommonParentCategoryId = parentCategoryCounts.entrySet().stream()
+        return parentCategoryCounts.entrySet().stream()
                 .max(Map.Entry.comparingByValue())
                 .map(Map.Entry::getKey)
                 .orElseThrow(() -> new CategoryNotFoundException("No common parent category found for the given keywords"));
-
-        return mostCommonParentCategoryId;
     }
 
     public boolean existsById(Long id) {
